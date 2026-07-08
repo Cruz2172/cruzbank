@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+
+{% block title %}Transfer - Simple Bank{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card card-shadow">
+            <div class="card-header bg-info text-white">
+                <h3 class="mb-0"><i class="fas fa-exchange-alt"></i> Transfer Money</h3>
+            </div>
+            <div class="card-body">
+                <div class="alert alert-info">
+                    <i class="fas fa-info-circle"></i> Your Balance: 
+                    <strong>${{ "%.2f"|format(user.balance if user else 0) }}</strong>
+                </div>
+                <form method="POST" action="{{ url_for('transfer') }}">
+                    <div class="mb-3">
+                        <label for="recipient" class="form-label">Recipient account</label>
+                        <input type="text" class="form-control" id="recipient" name="recipient" 
+                               required placeholder="Enter recipient's account">
+                        <div class="form-text">Make sure you enter the correct account.</div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="amount" class="form-label">Transfer Amount (₦)</label>
+                        <div class="input-group">
+                            <span class="input-group-text">₦</span>
+                            <input type="number" class="form-control" id="amount" name="amount" 
+                                   step="5" min="50.00" required placeholder="Enter amount">
+                        </div>
+                        <div class="form-text">Minimum transfer: ₦50.00</div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="description" class="form-label">Description (Optional)</label>
+                        <input type="text" class="form-control" id="description" 
+                               name="description" placeholder="e.g., Payment for services">
+                    </div>
+                    <div class="alert alert-warning">
+                        <i class="fas fa-exclamation-triangle"></i> 
+                        Please verify recipient details before confirming transfer.
+                    </div>
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-info text-white">
+                            <i class="fas fa-exchange-alt"></i> Transfer Funds
+                        </button>
+                    </div>
+                </form>
+                <div class="mt-3 text-center">
+                    <a href="{{ url_for('dashboard') }}" class="text-decoration-none">
+                        <i class="fas fa-arrow-left"></i> Back to Dashboard
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}

@@ -1,0 +1,47 @@
+{extends "base.html" %}
+
+{% block title %}Deposit - Simple Bank{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card card-shadow">
+            <div class="card-header bg-success text-white">
+                <h3 class="mb-0"><i class="fas fa-plus-circle"></i> Deposit Money</h3>
+            </div>
+            <div class="card-body">
+                <div class="alert alert-info">
+                    <i class="fas fa-info-circle"></i> Current Balance: 
+                    <strong>${{ "%.2f"|format(user.balance if user else 0) }}</strong>
+                </div>
+                <form method="POST" action="{{ url_for('deposit') }}">
+                    <div class="mb-3">
+                        <label for="amount" class="form-label">Deposit Amount ( ₦)</label>
+                        <div class="input-group">
+                            <span class="input-group-text">₦</span>
+                            <input type="number" class="form-control" id="amount" name="amount" 
+                                   step="10" min="50.00" required placeholder="Enter amount">
+                        </div>
+                        <div class="form-text">Minimum deposit: ₦50.00</div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="description" class="form-label">Description (Optional)</label>
+                        <input type="text" class="form-control" id="description" 
+                               name="description" placeholder="e.g., Salary deposit">
+                    </div>
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-success">
+                            <i class="fas fa-plus-circle"></i> Deposit Funds
+                        </button>
+                    </div>
+                </form>
+                <div class="mt-3 text-center">
+                    <a href="{{ url_for('dashboard') }}" class="text-decoration-none">
+                        <i class="fas fa-arrow-left"></i> Back to Dashboard
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

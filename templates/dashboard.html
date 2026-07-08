@@ -1,0 +1,127 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - Simple Bank{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12 mb-4">
+        <h2><i class="fas fa-tachometer-alt"></i> Dashboard</h2>
+        <p class="text-muted">Welcome back, {{ user.fullname if user else 'User' }}!</p>
+    </div>
+</div>
+
+<div class="row">
+    <!-- Balance Card -->
+    <div class="col-md-4 mb-4">
+        <div class="card balance-card card-shadow">
+            <div class="card-body">
+                <h5 class="card-title">
+                    <i class="fas fa-wallet"></i> Total Balance
+                </h5>
+                <h2 class="display-4">₦{{ "%.2f"|format(user.balance if user else 0) }}</h2>
+                <p class="card-text">
+                    <small>Last updated: {{ now if now else 'Today' }}</small>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="col-md-4 mb-4">
+        <div class="card card-shadow">
+            <div class="card-body">
+                <h5 class="card-title"><i class="fas fa-bolt"></i> Quick Actions</h5>
+                <div class="d-grid gap-2">
+                    <a href="{{ url_for('deposit') }}" class="btn btn-success">
+                        <i class="fas fa-plus-circle"></i> Deposit
+                    </a>
+                    <a href="{{ url_for('withdraw') }}" class="btn btn-warning">
+                        <i class="fas fa-minus-circle"></i> Withdraw
+                    </a>
+                    <a href="{{ url_for('transfer') }}" class="btn btn-info text-white">
+                        <i class="fas fa-exchange-alt"></i> Transfer
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Account Info -->
+    <div class="col-md-4 mb-4">
+        <div class="card card-shadow">
+            <div class="card-body">
+                <h5 class="card-title"><i class="fas fa-user-circle"></i> Account Info</h5>
+                <p><strong>Fullname:</strong> {{ user.fullname if user else 'N/A' }}</p>
+                <p><strong>Email:</strong> {{ user.email if user else 'N/A' }}</p>
+                <p><strong>Account Number:</strong> Savings</p>
+                <p><strong>Member Since:</strong> {{ user.created_at.strftime('%Y-%m-%d') if user and user.created_at else 'N/A' }}</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Transaction History -->
+<div class="row">
+    <div class="col-md-12">
+        <div class="card card-shadow">
+            <div class="card-header bg-white">
+                <h5 class="mb-0"><i class="fas fa-history"></i> Recent Transactions</h5>
+            </div>
+            <div class="card-body">
+                {% if transactions %}
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                    <th>Amount</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for transaction in transactions %}
+                                    <tr>
+                                        <td>{{ transaction.timestamp.strftime('%Y-%m-%d %H:%M') if transaction.timestamp else 'N/A' }}</td>
+                                        <!-- <td>{{ transaction.date.strftime('%Y-%m-%d %H:%M') if transaction.date else 'N/A' }}</td> -->
+                                        <td>
+                                            {% if transaction.type == 'deposit' %}
+                                                <span class="badge bg-success">Deposit</span>
+                                            {% elif transaction.type == 'withdraw' %}
+                                                <span class="badge bg-warning">Withdraw</span>
+                                            {% elif transaction.type == 'transfer_out' %}
+                                                <span class="badge bg-danger">Transfer Out</span>
+                                            {% elif transaction.type == 'transfer_in' %}
+                                                <span class="badge bg-info">Transfer In</span>
+                                            {% else %}
+                                                <span class="badge bg-secondary">{{ transaction.type }}</span>
+                                            {% endif %}
+                                            <!-- {% if transaction.type == 'deposit' %}
+                                                <span class="badge bg-success">Deposit</span>
+                                            {% elif transaction.type == 'withdraw' %}
+                                                <span class="badge bg-danger">Withdraw</span>
+                                            {% else %}
+                                                <span class="badge bg-info">Transfer</span>
+                                            {% endif %} -->
+                                        </td>
+                                        <td>{{ transaction.description }}</td>
+                                        <td class="{% if transaction.type in ['deposit', 'transfer_in'] %}text-success{% else %}text-danger{% endif %}">
+                                            {% if transaction.type in ['deposit', 'transfer_in'] %}+{% else %}-{% endif %}
+                                            ₦{{ "%.2f"|format(transaction.account) }}
+                                        </td>
+                                        
+                                       
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <p class="text-muted text-center">No transactions yet. Start banking today!</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
